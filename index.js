@@ -40,15 +40,25 @@ async function run() {
       const query = { _id: new ObjectId(id) };
 
       const options = {
-        // Include only the `title` and `imdb` fields in the returned document
-        projection: { title: 1, imdb: 1, price: 1, service_id: 1 },
+        // Include only specific fields in the returned document
+        projection: { title: 1, imdb: 1, price: 1, service_id: 1, img: 1 },
       };
 
       const result = await serviceCollection.findOne(query, options);
       res.send(result);
     });
 
-    // bookings
+    /* bookings */
+    // use query paramters to read partial data
+    app.get("/bookings", async (req, res) => {
+      let query = {};
+      if (req.query?.email) {
+        query = { email: req.query.email };
+      }
+      const result = await bookingCollection.find(query).toArray();
+      res.send(result);
+    });
+
     app.post("/bookings", async (req, res) => {
       const booking = req.body;
       console.log(booking);
