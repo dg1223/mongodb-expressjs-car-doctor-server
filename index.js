@@ -68,10 +68,13 @@ async function run() {
 
     // services routes
     app.get("/services", async (req, res) => {
-      const query = {};
+      const sort = req.query.sort;
+      const query = { price: { $gte: 150 } };
       const options = {
         // sort matched documents in descending order by rating
-        sort: { price: -1 },
+        sort: {
+          "price": sort === "asc" ? 1 : -1,
+        },
       };
       const cursor = serviceCollection.find(query, options);
       const result = await cursor.toArray();
